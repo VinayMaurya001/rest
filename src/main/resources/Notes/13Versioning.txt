@@ -1,0 +1,72 @@
+Versioning 
+	Tough Problem
+	No perfect solution
+
+Approaches of Versioning
+1)Using URIs versioning
+	Example:Used in Twitter
+The simplest option of versioning services is by mapping different URIs to them.
+	@GetMapping("v1/person")
+	public PersonV1 personV1() {
+		return new PersonV1("Bob Charlie");
+	}
+	@GetMapping("v2/person")
+	public PersonV2 personV2() {
+		return new PersonV2(new Name("Bob", "Charlie"));
+	}
+
+	
+2)Request Parameter Versioning
+	Example:	Used in Amazon
+To use a request parameter.
+@GetMapping(value = "/person/param", params = "version=1")
+	public PersonV1 paramV1() {
+		return new PersonV1("Bob Charlie");
+	}
+
+	@GetMapping(value = "/person/param", params = "version=2")
+	public PersonV2 paramV2() {
+		return new PersonV2(new Name("Bob", "Charlie"));
+	}
+
+3)Header Versioning
+	Example:	Used in Microsoft
+@GetMapping(value = "/person/header", headers = "X-API-VERSION=1")
+	public PersonV1 headerV1() {
+		return new PersonV1("Bob Charlie");
+	}
+
+	@GetMapping(value = "/person/header", headers = "X-API-VERSION=2")
+	public PersonV2 headerV2() {
+		return new PersonV2(new Name("Bob", "Charlie"));
+	}
+	
+	
+4)Accept header versioning or MIME type versioning or Media Type versioning or Content negotiation versioning
+	Example ;	Used in Github
+	@GetMapping(value = "/person/produces", produces = "application/vnd.company.app-v1+json")
+	public PersonV1 producesV1() {
+		return new PersonV1("Bob Charlie");
+	}
+
+	@GetMapping(value = "/person/produces", produces = "application/vnd.company.app-v2+json")
+	public PersonV2 producesV2() {
+		return new PersonV2(new Name("Bob", "Charlie"));
+	}
+	Postman Header
+		Accept: application/vnd.company.app-v1+json
+	
+	
+Factors
+	URI Pollution
+		Using URIs versioning
+		Request Parameter Versioning
+	Misuse of HTTP header
+		Header Versioning
+		Accept header versioning or MIME type versioning or Media Type versioning or Content negotiation versioning
+		Caching will be difficult
+	Can we exceute the request on browser
+	API documentation
+	
+	
+

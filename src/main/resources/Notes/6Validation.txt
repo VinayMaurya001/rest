@@ -1,0 +1,23 @@
+
+1)
+a)
+@Valid 
+b)
+@Size
+@Past
+@Max
+@Min
+
+2)
+@ControllerAdvice
+@RestController
+public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
+{
+@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Validation Failed",
+				ex.getBindingResult().toString());
+		return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+}

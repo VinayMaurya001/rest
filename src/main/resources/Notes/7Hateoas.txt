@@ -1,0 +1,38 @@
+HATEOAS
+	Hyper media As The Engine Of Application State
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+		
+
+@GetMapping("/students")
+List<Student> findAll() {
+		return studentService.findAll();
+}		
+@GetMapping("/students/{id}")
+	EntityModel<Student>  findOne(@PathVariable Integer id) {
+		Student student= studentService.findOne(id);
+		/*Resource<Student> resource = new Resource<Student>(student);
+		ControllerLinkBuilder linkTo = linkTo(( ControllerLinkBuilder.methodOn(this.getClass())).findAll());
+		resource.add(linkTo.withRel("all-students"));
+		return resource;*/
+		
+		//Since >=2.2.0 boot
+		EntityModel<Student> model = new EntityModel<>(student);
+		WebMvcLinkBuilder linkTo =WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).findAll());
+		model.add(linkTo.withRel("all-students"));
+		return model;
+		
+	}
+Output of localhost:8080/students/1
+{
+    "id": 1,
+    "name": "Adam",
+    "birthDate": "2020-03-28T09:07:23.708+0000",
+    "_links": {
+        "all-students": {
+            "href": "http://localhost:8080/students"
+        }
+    }
+}

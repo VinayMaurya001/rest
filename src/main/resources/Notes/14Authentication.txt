@@ -1,0 +1,91 @@
+Basic authentication with Spring Security
+	UserId Password
+	
+Digest authentication
+	Digest Password
+OAuth2
+
+1)
+<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+ 2)
+  default user 
+  	user
+  password from console
+  	62220524-c882-4d8f-86b7-0b384480191d
+ 3)   
+ spring.security.user.name=user
+	spring.security.user.password=password
+	
+4)
+    
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.inMemoryAuthentication().passwordEncoder(org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance()).withUser("user1").password("secret1")
+                .roles("USER").and().withUser("admin1").password("secret1")
+                .roles("ADMIN");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.httpBasic().and().authorizeRequests().antMatchers("/surveys/**")
+        .hasRole("USER").antMatchers("/users/**").hasRole("USER")
+                .antMatchers("/**").hasRole("ADMIN").and().csrf().disable()
+                .headers().frameOptions().disable();
+    }
+}
+
+4)
+Using Postman
+Using Authorization tab
+	Type Basic Auth
+	Username user2
+	Password password2
+	In Headers tab, the follwoing automatically created: 
+		Authorization:Basic dXNlcjI6cGFzc3dvcmQxMg==
+
+
+
+
+
+Unit testing in SPring Security
+ @WebMvcTest(value = SurveyController.class, secure = false)
+ 
+
+Integration test in SPring Security
+1)
+@Before
+	public void before() {
+		headers.add("Authorization", createHttpAuthenticationHeaderValue(
+				"user1", "secret1"));
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+	}
+	private String createHttpAuthenticationHeaderValue(String userId,
+			String password) {
+		String auth = userId + ":" + password;
+		byte[] encodedAuth = Base64.encode(auth.getBytes(Charset
+				.forName("US-ASCII")));
+		String headerValue = "Basic " + new String(encodedAuth);
+		return headerValue;
+	}
+}
+2)
+HttpHeaders headers = createHeaders("user1", "secret1");
+    HttpHeaders createHeaders(String username, String password) {
+        return new HttpHeaders() {
+            {
+                String auth = username + ":" + password;
+                byte[] encodedAuth = Base64.encode(auth.getBytes(Charset
+                        .forName("US-ASCII")));
+                String authHeader = "Basic " + new String(encodedAuth);
+                set("Authorization", authHeader);
+            }
+        };
+    }
+ 

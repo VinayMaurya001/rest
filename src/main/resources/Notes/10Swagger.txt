@@ -1,0 +1,92 @@
+Swagger
+	Configuring auto-generation of Swagger documentation
+	Introduction to Swagger Documentation Format
+	Enhancing Swagger Documentation 
+
+
+
+Configuring auto-generation of Swagger documentation
+1)
+<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+2)
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+
+	/*@Bean
+	public Docket api(){
+		return new Docket(DocumentationType.SWAGGER_2);
+	}*/
+	
+
+    @Bean
+    public LinkDiscoverers discoverers() {
+        List<LinkDiscoverer> plugins = new ArrayList<>();
+        plugins.add(new CollectionJsonLinkDiscoverer());
+        return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
+
+    }
+3)
+http://localhost:8080//v2/api-docs
+http://localhost:8080/swagger-ui.html
+
+http://jsonviewer.stack.hu/
+http://localhost:8080/swagger-resources
+
+http://localhost:8080/configuration/ui
+http://localhost:8080/configuration/security
+
+
+
+
+
+
+
+Introduction to Swagger Documentation Format
+
+
+
+
+Enhancing Swagger Documentation 
+1)
+	public static final Contact DEFAULT_CONTACT = new Contact("Ranga", "http://www.in28minutes.com",
+			"in28minutes@gmail.com");	
+	public static final ApiInfo DEFAULT_API_INFO = new ApiInfo("Api Documentation", "Api Documentation", "1.0",
+			"urn:tos", DEFAULT_CONTACT, "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0",
+			new ArrayList<VendorExtension>());
+	@Bean
+	public Docket api() {
+		//return new Docket(DocumentationType.SWAGGER_2).apiInfo(DEFAULT_API_INFO);
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(getApiInfo());
+	}
+	private ApiInfo getApiInfo() {
+		return new ApiInfoBuilder().title("My awesome API").description("My awesome API Description").version("1.0")
+				.termsOfServiceUrl("hjbjh").contact(DEFAULT_CONTACT).license("Apache 2.0")
+				.licenseUrl("http://www.apache.org/licenses/LICENSE-2.0").extensions(new ArrayList<VendorExtension>())
+				.build();
+	}
+2)
+HashSet<String> DEFAULT_CONSUMES_AND_PRODUCES = new HashSet<String>(Arrays.asList("application/json", "application/xml"));
+	@Bean
+	public Docket api() {
+		//return new Docket(DocumentationType.SWAGGER_2).apiInfo(DEFAULT_API_INFO);
+		return new Docket(DocumentationType.SWAGGER_2)
+				.apiInfo(getApiInfo())
+				.consumes(DEFAULT_CONSUMES_AND_PRODUCES)
+				.produces(DEFAULT_CONSUMES_AND_PRODUCES);
+	}
+3)
+With Custom Annotations
+@ApiModel(value="User Details", description="Contains all details of a user")
+@ApiModelProperty(notes = "Name should have atleast 2 characters")
+@ApiModelProperty(notes = "Birth Date should be in the Past")
+

@@ -1,0 +1,51 @@
+1)
+/src/main/resources/messages.properties
+	good.morning.message=Good Morning
+/src/main/resources/messages_fr.properties
+	good.morning.message=Bonjour
+
+2)Ways of Setting Basename
+a)
+@Bean
+	public ResourceBundleMessageSource messageSource(){
+		ResourceBundleMessageSource resourceBundleMessageSource=new ResourceBundleMessageSource();
+		resourceBundleMessageSource.setBasename("messages");
+		return resourceBundleMessageSource;
+	}
+b)
+/src/main/resources/application.properties
+	spring.messages.basename=messages
+
+3)Define default Locale resolver
+@SpringBootApplication
+public class RestApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(RestApplication.class, args);
+	}
+
+	@Bean
+	public LocaleResolver localeResolver() {
+		//SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+		AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+		localeResolver.setDefaultLocale(Locale.US);
+		return localeResolver;
+	}
+}
+
+4)
+@Autowired
+MessageSource messageSource;
+
+@GetMapping("/getInternationalizedMessage")
+	public String getInternationalizedMessage(
+			@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+		return messageSource.getMessage("good.morning.message", null, locale);
+	}
+@GetMapping("/getInternationalizedMessage2")
+	public String getInternationalizedMessage2() {
+		return messageSource.getMessage("good.morning.message", null, LocaleContextHolder.getLocale());
+	}
+5)
+http://localhost:8080/getInternationalizedMessage
+http://localhost:8080/getInternationalizedMessage2
+Accept-Language fr

@@ -1,0 +1,39 @@
+Filtering
+
+Static filtering
+	@JsonIgnore
+	String password;
+	@JsonIgnore
+	String name;
+	So when you deserialize some bean this field will be completely ignored.
+
+@JsonIgnoreProperties(value={"birthDate","name"})
+	class Student{}
+
+Dynamic filtering
+
+@JsonFilter("StudentFilter")
+public class Student {}
+
+	@GetMapping("/studentsWithFilterNameAndId/{id}")
+	MappingJacksonValue studentsWithFilterNameAndId(@PathVariable Integer id) {
+		Student student = studentService.findOne(id);
+		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(student);
+		mappingJacksonValue.setFilters(getFilterProvider("StudentFilter", "name", "id"));
+		return mappingJacksonValue;
+	}
+
+	@GetMapping("/studentsWithFilterNameAndId")
+	MappingJacksonValue studentsWithFilterNameAndId() {
+		List<Student> studentList = studentService.findAll();
+		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(studentList);
+		mappingJacksonValue.setFilters(getFilterProvider("StudentFilter", "name", "birthDate"));
+		return mappingJacksonValue;
+	}
+
+	private FilterProvider getFilterProvider(String filterBeanName, String... fields) {
+	//	SimpleBeanPropertyFilter simpleBeanPropertyFilter = SimpleBeanPropertyFilter.filterOutAllExcept(fields);
+		SimpleBeanPropertyFilter simpleBeanPropertyFilter = SimpleBeanPropertyFilter.serializeAllExcept(fields);
+		FilterProvider filterProvider = new SimpleFilterProvider().addFilter(filterBeanName, simpleBeanPropertyFilter);
+		return filterProvider;
+	}

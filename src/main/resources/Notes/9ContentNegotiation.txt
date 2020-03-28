@@ -1,0 +1,16 @@
+
+<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
+	
+Postman	
+	Header 
+	Accept:application/json(default )
+	Accept:application/xml
+		
+	key:value
+	Content-Type is for requestBody
+		Content-Type:application/json
+		Content-Type:application/xml
+	

@@ -1,0 +1,74 @@
+Deployment
+Monitoring
+
+Deployment 
+	cd projectName
+	mvn clean install  //it create jar files in target folder
+	java -jar target/demo-0.0.1-SNAPSHOT.jar
+	
+	change <packaging> to war in pom.xml
+		This war can be deployed in a separate tomcat server
+	
+	Spring boot developer tools
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+		On code change it restart application automatically & quickly even than starting.
+
+
+
+Monitoring
+
+Dependency 
+Actuator
+		<dependency>
+		<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+Hal Browser(Hal: Hyber Application Language)
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-rest-hal-browser</artifactId>
+		</dependency>	
+
+
+Spring Tools exclipse plugin enable auto complete & validate for spring specific properties
+
+
+Application.properties
+	management.endpoints.web.exposure.include=*
+	Actuator is a performance impact.
+		Actuator brings lot of monitoring metadata.
+	
+http://localhost:8080/actuator  
+http://localhost:8080/ (HAL broswer)
+
+	
+	
+metadata about application  using actuator
+Actuator->Web Services->HAL browser	
+	
+	
+	
+localhost:1234/health(managment.server=1234 in properties file)
+Building a RESTful web service with Spring Boot Actuator on spring.io
+localhost:8080/beans
+localhost:8080/info,metrics,mappings
+
+https://spring.io/guides/gs/actuator-service/
+https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/actuator-api/html/
+
+
+Spring Boot Actuator
+/env, /metrics, /trace, /dump, /shutdown, /beans, / autoconfig, /configprops, /mappings
+HAL Browser
+http://localhost:8080/actuator/
+Execute individual REST Services for each of above
+Programming Tip
+Use static code analysis - https://www.youtube.com/watch?v=rB_BaftN3nE
+
+	
+	
+	
+		
